@@ -12,7 +12,9 @@ kiekYraKaviniuKaune();
 kavinesPatiekalai(0);
 skirtinguPatiekaluKaunoFil();
 patiekaluVidutinekaina();
-kaunoFilDidNeiKitur();
+kaunoFilialoKainaDidesneNeguKitur();
+kiekProcentuVeganPatiekalu();
+vilniujeProcentaisDaugiauVeganPatiekaluNeiKitur();
 
 function kaviniuSkaicius(){
     console.log("Kaviniu skaicius:", data.length);
@@ -66,8 +68,92 @@ function patiekaluVidutinekaina(){
 }
 
 
-function kaunoFilDidNeiKitur(){
+function kaunoFilialoKainaDidesneNeguKitur(){
+    let kaunoKaina = 0;
+    let kaunoPatiekalu = 0;
+    let kituKaina = 0;
+    let kituPatiekalu = 0;
+
+    data.forEach(element => {
+        let adresas = element.adresas.toLowerCase();
+        if(adresas.includes("kaunas") == true){
+            element.menu.forEach(price => {
+                let keys = (Object.keys(price));
+                kaunoKaina += price[keys[0]];
+                kaunoPatiekalu++;
+            });
+        }else{
+            element.menu.forEach(price => {
+                let keys = (Object.keys(price));
+                kituKaina += price[keys[0]];
+                kituPatiekalu++;
+            });
+        }
+    });
+
+    if((kaunoKaina / kaunoPatiekalu) > (kituKaina / kituPatiekalu)){
+        console.log("Vidudinė patiekalų kaina Kauno filialuose aukštesnė TAIP");
+    }else{
+        console.log("Vidudinė patiekalų kaina Kauno filialuose aukštesnė NE");
+    };
+};
+
+function kiekProcentuVeganPatiekalu(){
+    let vegan = 0;
+    let neVegan = 0;
+    data.forEach(element => {
+        element.menu.forEach(vegetan => {
+            let keys = (Object.keys(vegetan));
+
+            if(vegetan[keys[1]].includes("taip") == true){
+                vegan++;
+            };
+            
+            if(vegetan[keys[1]].includes("ne") == true){
+                neVegan++;
+            };
+        });
+    });
+    console.log("Vegan patiekalu:", ((100 / (vegan + neVegan)) * vegan).toFixed(2), "%");
+};
+
+function vilniujeProcentaisDaugiauVeganPatiekaluNeiKitur(){
+    let vilVegan = 0;
+    let vilNeVegan = 0;
+    let vegan = 0;
+    let neVegan = 0;
+    data.forEach(element => {
+        let adresas = element.adresas.toLowerCase();
+        if(adresas.includes("vilnius") == true){
+            element.menu.forEach(vegetan => {
+                let keys = (Object.keys(vegetan));
+    
+                if(vegetan[keys[1]].includes("taip") == true){
+                    vilVegan++;
+                };
+                
+                if(vegetan[keys[1]].includes("ne") == true){
+                    vilNeVegan++;
+                };
+            });
+        }else{
+            element.menu.forEach(vegetan => {
+                let keys = (Object.keys(vegetan));
+    
+                if(vegetan[keys[1]].includes("taip") == true){
+                    vegan++;
+                };
+                
+                if(vegetan[keys[1]].includes("ne") == true){
+                    neVegan++;
+                };
+            });
+        }
+    });
+
+    let vilniaus =  (100 / (vilVegan + vilNeVegan))* vilVegan;
+    let kituMiestu =  (100 / (vegan + neVegan))* vegan;
+console.log("Ar Vilniuje negu kitur procentaliai daugiau vegetariškų patiekalų:", vilniaus > kituMiestu);
 
 
-
-}
+};
